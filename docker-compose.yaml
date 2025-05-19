@@ -1,4 +1,39 @@
 services:
+  frontend_react_service:
+    build:
+      context: ./frontend-react
+      dockerfile: Dockerfile
+    container_name: feedback_react_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    environment:
+      # React app (in browser) will call http://localhost:8000
+      # This assumes the user accesses the frontend via localhost:3000
+      # and the backend is also accessible on localhost:8000 from the user's machine.
+      VITE_API_BASE_URL: "http://localhost:8000"
+    depends_on:
+      - backend_service
+
+  backend_service:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    container_name: feedback_api_backend
+    restart: always
+    env_file:
+      - ./app/.env # For GOOGLE_API_KEY, FEEDBACK_COLUMN_NAME etc.
+    environment:
+      # This DATABASE_URL is for the backend container to connect to the 'db' service container (.env use localhost)
+      DATABASE_URL: "postgresql+asyncpg://user:password@db:5432/feedback_db"
+    ports:
+      - "8000:8000" # Host:Container
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app:/app
+
   db:
     image: pgvector/pgvector:pg16 # Use an official pgvector image for PostgreSQL 16
     container_name: feedback_db

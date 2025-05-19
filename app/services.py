@@ -319,10 +319,8 @@ async def process_csv_and_store(db: AsyncSession, file_path: str):
     all_embeddings_list = []
 
     # Gemini `embed_content` can handle lists. Max 100 items per call for `batch_embed_contents`.
-    # The `embed_content_async` function might handle this internally or have its own limits.
-    # It's safer to batch manually if you have many thousands of texts.
     # For `models/embedding-001`, the limit is often around requests per minute, not just batch size.
-    batch_size_gemini = 100  # Good practice for batching with Gemini API
+    batch_size_gemini = 100
     for i in range(0, len(feedback_texts), batch_size_gemini):
         batch_texts = feedback_texts[i : i + batch_size_gemini]
         if not batch_texts:
@@ -351,7 +349,7 @@ async def process_csv_and_store(db: AsyncSession, file_path: str):
             )
 
         # Add a small delay to respect potential RPM limits for free tier
-        await asyncio.sleep(1)  # 1 second delay between batches. Adjust as needed.
+        await asyncio.sleep(0.5)  # 0.5 second delay between batches. Adjust as needed.
     if len(all_embeddings_list) != len(data):
         msg = f"Critical Error: Mismatch after batch processing. Feedback texts: {len(data)}, Embeddings: {len(all_embeddings_list)}."
         print(msg)

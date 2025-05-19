@@ -5,6 +5,13 @@
     <link rel="icon" type="image/svg+xml" href="vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Feedback Explorer (Vite + React)</title>
+    <!-- Script for runtime environment variables -->
+    <script id="runtime-config">
+      window.runtimeConfig = {
+        // Nginx will replace the placeholder below with the actual environment variable value
+        VITE_API_BASE_URL: "${VITE_API_BASE_URL}"
+      };
+    </script>
   </head>
   <body class="bg-gray-900">
     <div id="root"></div>

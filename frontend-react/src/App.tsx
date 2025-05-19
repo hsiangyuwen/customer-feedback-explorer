@@ -3,8 +3,26 @@ import DataIngestionComponent from './components/DataIngestionComponent';
 import ChatInterfaceComponent from './components/ChatInterfaceComponent';
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 
+// Setup for dockerizing frontend
+// Function to get runtime config
+const getRuntimeConfig = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((window as any).runtimeConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (window as any).runtimeConfig;
+  }
+  return {}; // Fallback if runtimeConfig is not set
+};
+const runtimeConfig = getRuntimeConfig();
+// Use the runtime config if available and valid, otherwise Vite's build-time/dev env var, then fallback
+const API_BASE_URL = runtimeConfig.VITE_API_BASE_URL && runtimeConfig.VITE_API_BASE_URL !== '${VITE_API_BASE_URL}'
+  ? runtimeConfig.VITE_API_BASE_URL
+  : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'); // Fallback for local dev or if substitution failed
+console.log("API_BASE_URL set to:", API_BASE_URL); // For debugging
+
+// Setup for local `npm run dev
 // Access Vite environment variables for API base URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'; // Fallback
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'; // Fallback
 
 const App: React.FC = () => {
   const [ingestionStatus, setIngestionStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
