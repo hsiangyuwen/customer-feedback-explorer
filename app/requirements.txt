@@ -1,0 +1,20 @@
+# Web framework
+fastapi==0.115.12
+uvicorn==0.34.2
+pydantic==2.11.4
+
+# Python
+python-dotenv==1.1.0
+python-multipart==0.0.20
+tenacity==9.1.2
+greenlet==3.2.2
+pandas==2.2.3
+
+# Database
+asyncpg==0.30.0
+psycopg2-binary==2.9.10
+pgvector==0.4.1
+SQLAlchemy==2.0.41
+
+# AI
+google-genai==1.15.0

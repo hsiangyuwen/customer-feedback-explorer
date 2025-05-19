@@ -1,0 +1,24 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16 # Use an official pgvector image for PostgreSQL 16
+    container_name: feedback_db
+    restart: always
+    environment:
+      POSTGRES_DB: feedback_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: If you have an init script for pgvector extension (though pgvector image should handle it)
+      # - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - "5433:5432" # Expose DB on host port 5433 to avoid conflict if 5432 is used
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d feedback_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
